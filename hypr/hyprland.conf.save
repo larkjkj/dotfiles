@@ -1,0 +1,121 @@
+$menu = 'fuzzel'
+$navegador = 'chromium'
+$terminal = 'kitty'
+
+monitor = , 1366x768@60, 0x0, 1
+exec-once = swww-daemon & ags
+
+env = HYPRCURSOR_THEME,Nordzy-cursors
+env = HYPRCURSOR_SIZE,24
+env = XDG_SESSION_TYPE,wayland
+
+general {
+    border_size = 1
+    gaps_in = 8
+    gaps_out = 15
+    resize_on_border = true
+}
+
+decoration {
+    #rounding = 10
+    active_opacity = 1
+    inactive_opacity = 1
+    drop_shadow = true
+    col.shadow = rgba(1a1a1a99)
+    shadow_offset = -6, 6
+    shadow_render_power	= 3
+    blur {
+        enabled = true
+        size = 4
+        passes = 2
+    }
+}
+
+animations {
+    enabled = true
+    first_launch_animation = false
+
+    animation = windows, 1, 3, default, slide
+    animation = workspaces, 1, 6, default, slide
+}
+
+dwindle {
+    pseudotile = true
+    preserve_split = true
+    no_gaps_when_only = 1
+}
+
+input {
+    kb_layout = br
+    kb_variant = abnt2
+    #accel_profile = 200 1 1
+    touchpad {
+        disable_while_typing = false
+        natural_scroll = true
+    }
+}
+
+misc {
+    disable_hyprland_logo = true
+    #animate_manual_resizes = true
+    #animate_mouse_windowdragging = true
+    initial_workspace_tracking = 2
+    enable_swallow = true
+}
+
+bind = Super, Escape, exit
+
+bind = Super Control, Up, movewindow, u
+bind = Super Control, Down, movewindow, d
+bind = Super Control, Right, movewindow, r
+bind = Super Control, Left, movewindow, l
+
+binde = Super Shift, Up, resizeactive, 0 -50
+binde = Super Shift, Down, resizeactive, 0 50
+binde = Super Shift, Right, resizeactive, 50 0
+binde = Super Shift, Left, resizeactive, -50 0
+
+bind = Super Shift, Q, killactive
+bind = Super Shift, W, togglefloating
+bind = Super Shift, F, fullscreen
+
+bind = Super, Return, exec, $terminal
+bind = Super, C, exec, $navegador
+bind = Super, F, exec, firefox
+bind = Super, R, exec, $menu
+bind = Super, G, exec, grim -g $(slurp) - | wl-copy
+
+bind = Super, Up, movefocus, u
+bind = Super, Down, movefocus, d
+bind = Super, Right, movefocus, r
+bind = Super, Left, movefocus, l
+
+bind = Super, 1, workspace, 1
+bind = Super, 2, workspace, 2
+bind = Super, 3, workspace, 3
+bind = Super, 4, workspace, 4
+bind = Super, 5, workspace, 5
+
+bind = Super Shift, 1, movetoworkspace, 1
+bind = Super Shift, 2, movetoworkspace, 2
+bind = Super Shift, 3, movetoworkspace, 3
+bind = Super Shift, 4, movetoworkspace, 4
+bind = Super Shift, 5, movetoworkspace, 5
+
+bindm = Super, mouse:272, movewindow
+bindm = Super, mouse:273, resizewindow
+
+binde = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle
+binde = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%-
+binde = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%+ -l 1.0
+binde = , XF86MonBrightnessUp, exec, brightnessctl s 5%+
+binde = , XF86MonBrightnessDown, exec, brightnessctl s 5%-
+
+windowrulev2 = suppressevent, title:(Picture-in-Picture)
+windowrulev2 = float, title:(Picture-in-Picture)
+windowrulev2 = pin, title:(Picture-in-Picture)
+windowrulev2 = float, title:(zenity)
+windowrulev2 = opacity 0.9, title:(Firefox)
+windowrulev2 = float, class:(zenity)
+windowrulev2 = float, class:(kitty)
+windowrulev2 = size 600 4Q00, class:(kitty)

@@ -1,0 +1,312 @@
+const audio = await Service.import('audio')
+const battery = await Service.import('battery')
+const mpris = await Service.import('mpris')
+const hyprland = await Service.import('hyprland')
+import brightness from './brightness.js'
+
+const time = Variable('', {
+    poll: [1000, 'date +%T'],
+})
+
+function nothing_playing() {
+    return Widget.Box({
+        child: Widget.Label({
+            label: 'Nada tocando :('
+        })
+    })
+}
+
+const player_title = player => Widget.Button({
+    on_clicked: () => App.toggleWindow('player_window'),
+    label: player.bind('track_title').as(p => `${p.substring(0, 30)}`),
+})
+
+const player_widget = Widget.Box({
+    children: mpris.bind('players').as(p => p.length > 0
+        ? p.map(player_title)
+        : [nothing_playing()]),
+    class_name: 'player_box'
+})
+
+const player_spawn_control = Widget.Box({
+    children: mpris.bind('players').as(p => p
+        .map(player_control))
+})
+
+function player_control(player) {
+    const cover = Widget.Box({
+        hpack: 'center',
+        children: [
+            Widget.Button({
+                class_name: 'media_button',
+                hpack: 'center',
+                vpack: 'center',
+                label: '󰒮',
+                on_clicked: () => player.previous(),
+                css: ' transition-duration: 0.6s; min-height: 5px; min-width: 5px; background-color: transparent; padding-right: 20px'
+            }),
+            Widget.Box({
+                hpack: 'center',
+                css: player.bind('cover-path').transform(p =>
+                    `background-size: 100px;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-image: url('${p}');
+                    min-width: 100px;
+                    min-height: 80px;
+                    padding-top: 40px;
+                    padding-left: 5px;
+                    padding-right: 5px;`
+                ),
+            }),
+            Widget.Button({
+                class_name: 'media_button',
+                hpack: 'center',
+                vpack: 'center',
+                label: '󰒭',
+                on_clicked: () => player.next(),
+                css: ' transition-duration: 0.6s; min-height: 5px; background-color: transparent; padding-left: 20px'
+            }),
+        ]
+    })
+    
+    const playpause = Widget.Button({
+        class_name: 'media_button',
+        hpack: 'center',
+        vpack: 'start',
+        hexpand: false,
+        on_clicked: () => player.playPause(),
+        child: Widget.Label({
+            label: player.bind('play-back-status').transform(i => {
+                switch (i) {
+                    case 'Playing':
+                        return ''
+                    case 'Paused':
+                        return '󰐊'
+                    case 'Stopped':
+                        return '󰐊'
+                }
+            })
+        }),
+        css: 'background-color: transparent; transition-duration: 0.6s; padding-left: 10px; padding-right: 10px; padding-bottom: 10px;'
+    })
+        
+    const progress = Widget.Slider({
+        class_name: 'progress_slider',
+        hpack: 'center',
+        vpack: 'center',
+        width_request: 130,
+        draw_value: false,
+        value: 0,
+        on_change: ({ value }) => player.position = value * player.length,
+        }).hook(player, self => {
+            function positionUpdate(){
+                self.value = player.position / player.length
+            }
+            if (player.position > 0) {
+                self.poll(1000, positionUpdate)
+            }
+    })
+
+    const shuffle = Widget.Button({
+        class_name: 'media_button',
+        hpack: 'center',
+        vpack: 'center',
+        label: '󰒝',
+        on_clicked: () => player.shuffle(),
+        css: 'background-color: transparent; transition-duration: 0.6s;'
+    })
+    
+    const loop = Widget.Button({
+        class_name: 'media_button',
+        hpack: 'center',
+        vpack: 'center',
+        on_clicked: () => player.loop(),
+        css: 'background-color: transparent; transition-duration: 0.6s;',
+        child: Widget.Label({
+            label: player.bind('loop-status').transform(l => {
+                switch (l) {
+                    case 'None':
+                        return "󰑗"
+                    case 'Track':
+                        return '󰑘'
+                    case 'Playlist':
+                        return '󰑖'
+                }
+            })
+        })
+    })
+
+    const controller = Widget.CenterBox({
+        start_widget: shuffle,
+        center_widget: progress,
+        end_widget: loop
+    })
+    
+    return Widget.Box({
+        children: [
+            Widget.EventBox({
+                on_hover_lost: () => App.closeWindow('player_window'),
+            }), 
+            Widget.CenterBox({
+                vertical: true,
+                start_widget: cover,
+                center_widget: controller,
+                end_widget: playpause,
+                css: 'font-family: FantasqueSansM Nerd Font; border-radius: 30px; background-color: #151515; min-width: 250px; min-height: 150px;'
+            }),
+        ]
+    })
+}
+
+const workspaces_widget = Widget.Box({
+    children: [
+        Widget.Icon({
+            icon: hyprland.active.client.bind('class')
+        }),
+        Widget.Label({
+            hpack: 'center',
+            label: hyprland.active.workspace.bind('name').as(w => `${w}`)
+        }),
+    ],
+    hexpand: false,
+    css: 'padding-left: 10px;'
+}) 
+
+const volume_widget = Widget.Box({
+    hpack: 'end',
+    children: [
+        Widget.Box({
+            css: 'background-color: transparent; padding-right: 10px; padding-left: 10px',
+            child: Widget.Icon().hook(audio.speaker, self => {
+                const volume = audio.speaker.volume * 100
+                const icon = [
+                    [101, 'overamplified'],
+                    [50, 'high'],
+                    [20, 'medium'],
+                    [10, 'low'],
+                    [0, 'muted'],
+                // @ts-ignore
+                ].find(([threshold]) => threshold <= volume)?.[1];
+                self.icon = `audio-volume-${icon}-symbolic`;
+            })
+        }),
+        Widget.Slider({
+            class_name: 'volume_slider',
+            widthRequest: 80,
+            draw_value: false,
+            min: 0,
+            max: 1,
+            value: audio.speaker.bind('volume'),
+            on_change: ( { value } ) => {
+                audio.speaker.volume = value;
+            },
+        })
+    ]
+})
+
+const battery_widget = Widget.Box({
+    children: [
+        Widget.Icon({
+            css: 'padding-left: 10px; padding-right: 5px'
+        }).hook(battery, self => {
+            self.icon = `${battery.icon_name}`
+        })
+,        Widget.Label({
+            css: 'padding-right: 10px;'
+        }).hook(battery, self => {
+            self.label = `${battery.percent}%`
+        })
+    ]
+})
+
+const brightness_widget = Widget.Box({
+    children: [
+        Widget.Label({
+            label: '',
+            css: 'padding-right: 15px;'
+        }),
+        Widget.Slider({
+            class_name: 'brightness_slider',
+            draw_value: false,
+            widthRequest: 80,
+            on_change: self => brightness.sc_value = self.value,
+            value: brightness.bind('sc_value'),
+        })
+    ]
+})
+
+const clock_widget = Widget.Box({
+    children: [
+        Widget.Label({
+            label: time.bind().as(t => `  ${t}`),
+            css: 'padding-right: 10px'
+        })
+    ]
+})
+
+const sliders = Widget.Box({
+    class_name: 'sliders',
+    hpack: 'end',
+    children: [
+        brightness_widget,
+        volume_widget,
+    ],
+})
+
+const status = Widget.Box({
+    class_name: 'status',
+    children: [
+        battery_widget,
+        clock_widget
+    ]
+})
+
+const right = Widget.CenterBox({
+    start_widget: sliders,
+    end_widget: status,
+})
+
+
+const all = Widget.CenterBox({
+    start_widget: Widget.Box({
+        child: workspaces_widget,
+        hpack: 'start',
+        class_name: 'start',
+    }),
+    center_widget: Widget.Box({
+        child: player_widget,
+        hpack: 'center',
+    }),
+    end_widget: Widget.Box({
+        child: right,
+        hpack: 'end',
+        class_name: 'end',
+        css: 'background-color: transparent;'
+    }),
+    hexpand: false,
+})
+
+const player_window = Widget.Window({
+    child: player_spawn_control,
+    name: 'player_window',
+    anchor: ['top'],
+    margins: [6, 6, 6, 6],
+    exclusivity: 'normal',
+    keymode: 'on-demand',
+    class_name: 'player_window'
+}).keybind('Escape', self => App.closeWindow('player_window'))
+
+const bar = Widget.Window({
+    child: all,
+    name: 'bar',
+    anchor: ['top', 'left', 'right'],
+    margins: [6, 6, 0, 6],
+    exclusivity: 'exclusive',
+    class_name: 'window'
+})
+
+App.config({
+    windows: [bar, player_window],
+    style: './style.scss'
+})

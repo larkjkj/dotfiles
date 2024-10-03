@@ -1,0 +1,78 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = '''$username [󰣇](bold bright-blue) $directory $battery
+$character'''
+right_format = '''$cmd_duration $git_branch $time'''
+add_newline = true
+
+[battery]
+full_symbol = '󰁹'
+charging_symbol = '󰂄'
+unknown_symbol = '󰂑'
+discharging_symbol = '󰂃'
+empty_symbol = '󰂎'
+format = '[$symbol $percentage]($style)'
+
+[[battery.display]]
+threshold = 10
+style = 'bold red'
+
+[[battery.display]]
+threshold = 60
+style = 'bold yellow'
+
+[[battery.display]]
+threshold = 99
+style = 'bold green'
+
+[[battery.display]]
+threshold = 100
+style = 'bold blue'
+
+[cmd_duration]
+min_time = 1_000
+show_milliseconds = false
+format = '[](italic bright-yellow) [$duration](italic bright-yellow)'
+
+[directory]
+home_symbol = '󰜥'
+read_only = ' '
+read_only_style = 'bold underline bright-green'
+style = 'bold ditted white'
+before_repo_root_style = 'bold underline red'
+repo_root_style = 'bold underline red'
+
+[fill]
+symbol = '.'
+style = 'bold black'
+
+[hostname]
+trim_at = '.'
+ssh_only = false
+ssh_symbol = ''
+format = '[@](bold cyan)[$hostname $ssh_symbol]($style)'
+style = 'bold bright-cyan'
+disabled = false
+
+[character]
+success_symbol = '[](bold bright-green)'
+error_symbol = '[](bold red)'
+
+[git_branch]
+format = '[$symbol $branch]($style)'
+symbol = ''
+style = 'bold underline purple'
+
+[time]
+format = '[ $time]($style)'
+style = 'bold bright-purple'
+disabled = false
+
+[username]
+style_user = 'bold dimmed grey'
+format = '[$user]($style)'
+style_root = 'red bold'
+show_always = true
+
+[shell]
+disabled = false

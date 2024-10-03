@@ -1,0 +1,64 @@
+{
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+
+    "display": {
+        "separator": "  "
+    },
+    "logo": {
+        "type": "small",
+        "color": {"4": "blue"},
+        "padding": {
+            "left": 2,
+            "top": 2
+        }
+    },
+    "modules": [
+        "break",
+        {
+            "type": "custom",
+            "format": "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
+        },
+        {
+            "type": "os",
+            "key": "   os   ",
+            "format": "  {2}",
+            "keyColor": "white"
+        },
+        {
+            "type": "packages",
+            "key": "   pkgs ",
+            "format": "  {1}",
+            "keyColor": "dim_white"
+        },
+        {
+            "type": "memory",
+            "key": "   ram  ",
+            "format": "  {1}  {2}",
+            "keyColor": "white"
+        },
+        {
+            "type": "wm",
+            "key": "   wm   ",
+            "format": "  {1}",
+            "keyColor": "dim_white"
+        },
+        {
+            "type": "terminalfont",
+            "key": "   font ",
+            "format": "  {2}",
+            "keyColor": "white",
+        },
+        {
+            "type": "cpuusage",
+            "key": "   cpu  ",
+            "format": "  {1} / 100%",
+            "keyColor": "dim_white",
+        },
+        {
+            "type": "custom",
+            "format": "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
+	},
+	"break",
+    ]
+}
+

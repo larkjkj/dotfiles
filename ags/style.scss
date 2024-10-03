@@ -1,0 +1,96 @@
+* {
+    all: unset;
+    font-family: 'FantasqueSansM Nerd Font';
+    font-size: 14px;
+}
+
+.window, .player_window {
+    min-height: 25px;
+}
+
+.start {
+    border-radius: 30px;
+    background-color: #151515;
+    min-height: 25px;
+}
+
+.end {
+    border-radius: 30px;
+    background-color: #151515;
+    min-height: 25px;
+}
+
+.volume_slider trough {
+    background-color: rgb(68, 68, 68);
+    min-height: 5px;
+    border-radius: 20px;
+    border-width: 2px;
+}
+
+.volume_slider highlight {
+    background-color: rgb(255, 255, 255);
+    transition: ease-in 0.5s;
+    border-width: 2px;
+    border-radius: 30px;
+}
+
+.progress_slider trough {
+    background-color: rgb(110, 110, 110);
+    min-height: 4px;
+    border-radius: 30px;
+}
+
+.progress_slider highlight {
+    background-color: white;
+    min-height: 4px;
+    border-radius: 30px;
+}
+
+.brightness_slider highlight {
+    min-height: 5px;
+    border-radius: 30px;
+    background-color: white;
+}
+
+.brightness_slider trough {
+    min-height: 5px;
+    border-radius: 20px;
+    background-color: rgb(110, 110, 110)
+}
+
+.player_box {
+    background-color: #151515;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 30px;
+}
+
+.player_window {
+    background-color: #151515;
+    min-height: 120px;
+    min-width: 50px;
+    border-radius: 15px;
+}
+
+.sliders {
+    background-color: #151515;
+    border-radius: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.status {
+    background-color: #151515;
+    border-radius: 30px;
+    margin-left: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.track {
+    color: rgb(0, 255, 13);
+}
+
+.playlist {
+    color: rgb(122, 65, 255);
+}
