@@ -1,21 +1,21 @@
 ![teste](https://github.com/user-attachments/assets/1572ad33-df25-4dc9-bf87-18c22379e39a)
 
 (Neccessary)
-Aylur's GTK Shell (AGS)
-kitty
-Hyprland
-swww
-yay
+Aylur's GTK Shell (AGS),
+kitty,
+Hyprland,
+swww,
+yay,
 
 (optional)
-fuzzel
-A nerd font like FantasqueSansM
-Papirus Icon Theme
-grim
-slurp
-fastfetch
-starship
-fish
+fuzzel,
+A nerd font like FantasqueSansM,
+Papirus Icon Theme,
+grim,
+slurp,
+fastfetch,
+starship,
+fish,
 
 (STEP 1)
 If you're on Arch, you can simple run this and it will install all the stuff:
